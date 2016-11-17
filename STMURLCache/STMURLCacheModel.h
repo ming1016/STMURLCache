@@ -2,8 +2,7 @@
 //  STMURLCacheModel.h
 //  HomePageTest
 //
-//  Created by didi on 2016/11/14.
-//  Copyright © 2016年 DiDi. All rights reserved.
+//  Created by daiming on 2016/11/14.
 //
 
 #import <Foundation/Foundation.h>
