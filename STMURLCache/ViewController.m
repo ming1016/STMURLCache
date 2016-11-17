@@ -31,7 +31,7 @@
     [self.sCache update:^(STMURLCacheMk *mk) {
         mk.isDownloadMode(YES);
     }];
-    //    [self.sCache preLoadByWebViewWithUrls:@[@"http://www.v2ex.com",@"http://www.github.com"];
+    [self.sCache preLoadByWebViewWithUrls:@[@"http://www.v2ex.com",@"http://www.github.com",@"http://www.starming.com"]];
     //    [self.sCache preLoadByRequestWithUrls:@[@"http://www.github.com",@"http://www.baidu.com"]];
     
     //    [self.sCache stop];
