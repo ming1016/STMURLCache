@@ -16,10 +16,10 @@
 + (STMURLCache *)create:(void (^)(STMURLCacheMk *))mk {
     STMURLCache *c = [[self alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
     STMURLCacheMk *cMk = [[STMURLCacheMk alloc] init];
+    cMk.isDownloadMode(YES);
     mk(cMk);
     c.mk = cMk;
     c = [c build];
-    [c.mk.cModel checkCapacity];
     [NSURLCache setSharedURLCache:c];
     return c;
 }
@@ -40,6 +40,7 @@
 - (void)stop {
     NSURLCache *c = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
     [NSURLCache setSharedURLCache:c];
+    [self.mk.cModel checkCapacity];
 }
 
 #pragma mark - Interface PreLoad by Webview
