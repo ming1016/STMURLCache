@@ -16,6 +16,7 @@
 		0A0E8B471DDDCBD30071B5AF /* STMURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E8B421DDDCBD30071B5AF /* STMURLCache.m */; };
 		0A0E8B481DDDCBD30071B5AF /* STMURLCacheMk.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E8B441DDDCBD30071B5AF /* STMURLCacheMk.m */; };
 		0A0E8B491DDDCBD30071B5AF /* STMURLCacheModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E8B461DDDCBD30071B5AF /* STMURLCacheModel.m */; };
+		0A0FA8F71DE19C7800142F97 /* STMURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0FA8F61DE19C7800142F97 /* STMURLProtocol.m */; };
 		87F127987BBB1424920EEC2B /* Pods_STMURLCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAAAC65E1D9EA034473E3E61 /* Pods_STMURLCache.framework */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +37,8 @@
 		0A0E8B441DDDCBD30071B5AF /* STMURLCacheMk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMURLCacheMk.m; sourceTree = "<group>"; };
 		0A0E8B451DDDCBD30071B5AF /* STMURLCacheModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMURLCacheModel.h; sourceTree = "<group>"; };
 		0A0E8B461DDDCBD30071B5AF /* STMURLCacheModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMURLCacheModel.m; sourceTree = "<group>"; };
+		0A0FA8F51DE19C7800142F97 /* STMURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMURLProtocol.h; sourceTree = "<group>"; };
+		0A0FA8F61DE19C7800142F97 /* STMURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMURLProtocol.m; sourceTree = "<group>"; };
 		868252238BD2CABA53DB92C8 /* Pods-STMURLCache.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STMURLCache.debug.xcconfig"; path = "Pods/Target Support Files/Pods-STMURLCache/Pods-STMURLCache.debug.xcconfig"; sourceTree = "<group>"; };
 		BAAAC65E1D9EA034473E3E61 /* Pods_STMURLCache.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_STMURLCache.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE419D310DB45B39C2AD6CD7 /* Pods-STMURLCache.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STMURLCache.release.xcconfig"; path = "Pods/Target Support Files/Pods-STMURLCache/Pods-STMURLCache.release.xcconfig"; sourceTree = "<group>"; };
@@ -105,6 +108,8 @@
 				0A0E8B441DDDCBD30071B5AF /* STMURLCacheMk.m */,
 				0A0E8B451DDDCBD30071B5AF /* STMURLCacheModel.h */,
 				0A0E8B461DDDCBD30071B5AF /* STMURLCacheModel.m */,
+				0A0FA8F51DE19C7800142F97 /* STMURLProtocol.h */,
+				0A0FA8F61DE19C7800142F97 /* STMURLProtocol.m */,
 			);
 			name = STMURLCache;
 			sourceTree = "<group>";
@@ -252,6 +257,7 @@
 				0A0E8B491DDDCBD30071B5AF /* STMURLCacheModel.m in Sources */,
 				0A0E8B481DDDCBD30071B5AF /* STMURLCacheMk.m in Sources */,
 				0A0E8B2E1DDDC8E60071B5AF /* AppDelegate.m in Sources */,
+				0A0FA8F71DE19C7800142F97 /* STMURLProtocol.m in Sources */,
 				0A0E8B2B1DDDC8E60071B5AF /* main.m in Sources */,
 				0A0E8B471DDDCBD30071B5AF /* STMURLCache.m in Sources */,
 			);
@@ -375,6 +381,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = STMURLCache/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.starming.STMURLCache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -387,6 +394,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = STMURLCache/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.starming.STMURLCache;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -87,5 +87,11 @@
         return self;
     };
 }
+- (STMURLCacheMk *(^)(BOOL)) isUsingURLProtocol {
+    return ^STMURLCacheMk *(BOOL v) {
+        self.cModel.isUsingURLProtocol = v;
+        return self;
+    };
+}
 
 @end

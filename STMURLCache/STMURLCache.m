@@ -2,10 +2,10 @@
 
 #import "STMURLCache.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "STMURLProtocol.h"
 
 @interface STMURLCache()<UIWebViewDelegate>
 
-@property (nonatomic, strong) STMURLCacheMk *mk;
 @property (nonatomic, strong) UIWebView *wbView; //用于预加载的webview
 @property (nonatomic, strong) NSMutableArray *preLoadWebUrls; //预加载的webview的url列表
 
@@ -19,27 +19,38 @@
     cMk.isDownloadMode(YES);
     mk(cMk);
     c.mk = cMk;
-    c = [c build];
-    [NSURLCache setSharedURLCache:c];
+    c = [c configWithMk];
     return c;
 }
 
-- (STMURLCache *)build {
+- (STMURLCache *)configWithMk {
     if (!self.mk.cModel.path) {
         self.mk.cModel.path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
     }
     self.mk.cModel.isSavedOnDisk = YES;
+    
+    if (self.mk.cModel.isUsingURLProtocol) {
+        [NSURLProtocol registerClass:[STMURLProtocol class]];
+    } else {
+        [NSURLCache setSharedURLCache:self];
+    }
     return self;
 }
 
 - (STMURLCache *)update:(void (^)(STMURLCacheMk *))mk {
     mk(self.mk);
+    [self configWithMk];
     return self;
 }
 
 - (void)stop {
-    NSURLCache *c = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
-    [NSURLCache setSharedURLCache:c];
+    
+    if (self.mk.cModel.isUsingURLProtocol) {
+        [NSURLProtocol unregisterClass:[STMURLProtocol class]];
+    } else {
+        NSURLCache *c = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
+        [NSURLCache setSharedURLCache:c];
+    }
     [self.mk.cModel checkCapacity];
 }
 

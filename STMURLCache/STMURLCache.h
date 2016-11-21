@@ -8,6 +8,8 @@
 
 @interface STMURLCache : NSURLCache
 
+@property (nonatomic, strong) STMURLCacheMk *mk;
+
 + (STMURLCache *)create:(void(^)(STMURLCacheMk *mk))mk;  //初始化并开启缓存
 - (STMURLCache *)update:(void (^)(STMURLCacheMk *mk))mk;
 

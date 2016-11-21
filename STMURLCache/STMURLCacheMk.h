@@ -19,5 +19,9 @@
 - (STMURLCacheMk *(^)(NSString *)) addHostWhiteList;        //添加一个域名白名单
 - (STMURLCacheMk *(^)(NSString *)) addRequestUrlWhiteList;  //添加请求白名单
 
+//NSURLProtocol相关设置
+- (STMURLCacheMk *(^)(BOOL)) isUsingURLProtocol; //是否使用NSURLProtocol，默认使用NSURLCache
+
+
 
 @end

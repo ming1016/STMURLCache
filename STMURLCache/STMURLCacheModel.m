@@ -77,7 +77,7 @@
 }
 
 #pragma mark - Cache Helper
-- (NSString *)filePathFromRequest:(NSURLRequest *)request isInfo:(BOOL)info{
+- (NSString *)filePathFromRequest:(NSURLRequest *)request isInfo:(BOOL)info {
     NSString *url = request.URL.absoluteString;
     NSString *fileName = [self cacheRequestFileName:url];
     NSString *otherInfoFileName = [self cacheRequestOtherInfoFileName:url];
@@ -111,7 +111,7 @@
         [fm createDirectoryAtPath:subDirPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString *cFilePath = [NSString stringWithFormat:@"%@/%@",subDirPath,file];
-//    NSLog(@"%@",cFilePath);
+    NSLog(@"%@",cFilePath);
     return cFilePath;
 }
 

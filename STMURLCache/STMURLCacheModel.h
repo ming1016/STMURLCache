@@ -27,6 +27,10 @@
 @property (nonatomic, strong) NSMutableDictionary *whiteListsHost;       //域名白名单
 @property (nonatomic, strong) NSMutableDictionary *whiteListsRequestUrl; //请求地址白名单
 @property (nonatomic, strong) NSString *whiteUserAgent;             //WebView的user-agent白名单
+
+//NSURLProtocol
+@property (nonatomic) BOOL isUsingURLProtocol; //是否使用URLProtocol
+
 //----------方法---------------
 //查找请求对应的文件路径
 - (NSString *)filePathFromRequest:(NSURLRequest *)request isInfo:(BOOL)info;
