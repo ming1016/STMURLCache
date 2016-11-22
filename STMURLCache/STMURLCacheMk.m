@@ -50,15 +50,7 @@
         return self;
     };
 }
-- (STMURLCacheMk *(^)(NSString *))path {
-    return ^STMURLCacheMk *(NSString *v) {
-        if (v) {
-            self.cModel.diskPath = v;
-            self.cModel.path = v;
-        }
-        return self;
-    };
-}
+
 - (STMURLCacheMk *(^)(NSUInteger))cacheTime {
     return ^STMURLCacheMk *(NSUInteger v) {
         self.cModel.cacheTime = v;

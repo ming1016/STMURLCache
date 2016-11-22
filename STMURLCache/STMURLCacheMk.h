@@ -9,7 +9,6 @@
 
 - (STMURLCacheMk *(^)(NSUInteger)) memoryCapacity;   //内存容量
 - (STMURLCacheMk *(^)(NSUInteger)) diskCapacity;     //本地存储容量
-- (STMURLCacheMk *(^)(NSString *)) path;             //路径
 - (STMURLCacheMk *(^)(NSUInteger)) cacheTime;        //缓存时间
 - (STMURLCacheMk *(^)(NSString *)) subDirectory;     //子目录
 - (STMURLCacheMk *(^)(BOOL)) isDownloadMode;         //是否启动下载模式

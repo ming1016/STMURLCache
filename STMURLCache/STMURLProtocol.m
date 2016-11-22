@@ -9,6 +9,7 @@
 #import "STMURLProtocol.h"
 #import "STMURLCache.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "STMURLCacheModel.h"
 
 static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
 
@@ -26,7 +27,23 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
 @implementation STMURLProtocol
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
-    
+    STMURLCacheModel *sModel = [STMURLCacheModel shareInstance];
+    //User-Agent来过滤
+    if (sModel.whiteUserAgent.length > 0) {
+        NSString *uAgent = [request.allHTTPHeaderFields objectForKey:@"User-Agent"];
+        if (uAgent) {
+            if (![uAgent hasSuffix:sModel.whiteUserAgent]) {
+                return NO;
+            }
+        } else {
+            return NO;
+        }
+    }
+    //只允许GET方法通过
+    if ([request.HTTPMethod compare:@"GET"] != NSOrderedSame) {
+        return nil;
+    }
+    //防止递归
     if ([NSURLProtocol propertyForKey:STMURLProtocolHandled inRequest:request]) {
         return NO;
     }
@@ -36,7 +53,6 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
     } else {
         return NO;
     }
-    
     return YES;
 }
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request
@@ -119,7 +135,6 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
     [self clear];
 }
 
-//
 - (void)clear {
     [self setData:nil];
     [self setConnection:nil];
@@ -135,7 +150,6 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
     }
 }
 
-//
 #pragma mark - Cache Helper
 - (NSString *)filePathFromRequest:(NSURLRequest *)request isInfo:(BOOL)info {
     NSString *url = request.URL.absoluteString;

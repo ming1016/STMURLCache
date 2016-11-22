@@ -24,12 +24,18 @@
 }
 
 - (STMURLCache *)configWithMk {
-    if (!self.mk.cModel.path) {
-        self.mk.cModel.path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
-    }
+    
     self.mk.cModel.isSavedOnDisk = YES;
     
     if (self.mk.cModel.isUsingURLProtocol) {
+        STMURLCacheModel *sModel = [STMURLCacheModel shareInstance];
+        sModel.cacheTime = self.mk.cModel.cacheTime;
+        sModel.diskCapacity = self.mk.cModel.diskCapacity;
+        sModel.diskPath = self.mk.cModel.diskPath;
+        sModel.cacheFolder = self.mk.cModel.cacheFolder;
+        sModel.subDirectory = self.mk.cModel.subDirectory;
+        sModel.whiteUserAgent = self.mk.cModel.whiteUserAgent;
+        sModel.whiteListsHost = self.mk.cModel.whiteListsHost;
         [NSURLProtocol registerClass:[STMURLProtocol class]];
     } else {
         [NSURLCache setSharedURLCache:self];
@@ -70,8 +76,13 @@
     if (self.preLoadWebUrls.count > 0) {
         [self.preLoadWebUrls removeObjectAtIndex:0];
         [self requestWebWithFirstPreUrl];
+        if (self.preLoadWebUrls.count == 0) {
+            self.wbView = nil;
+            [self stop];
+        }
     } else {
         self.wbView = nil;
+        [self stop];
     }
 }
 - (void)requestWebWithFirstPreUrl {

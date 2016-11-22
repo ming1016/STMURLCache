@@ -25,13 +25,13 @@
     NSMutableArray *whiteLists = [NSMutableArray arrayWithArray:[whiteListStr componentsSeparatedByString:@"|"]];
     whiteLists = nil;
     self.sCache = [STMURLCache create:^(STMURLCacheMk *mk) {
-        mk.whiteListsHost(whiteLists).whiteUserAgent(@"starming");
+        mk.whiteListsHost(whiteLists).whiteUserAgent(@"starming").isUsingURLProtocol(YES);
     }];
     
     [self.sCache update:^(STMURLCacheMk *mk) {
         mk.isDownloadMode(YES);
     }];
-//    [self.sCache preLoadByWebViewWithUrls:@[@"http://www.v2ex.com",@"http://www.github.com",@"http://www.starming.com"]];
+    [self.sCache preLoadByWebViewWithUrls:@[@"http://www.v2ex.com",@"http://www.github.com",@"http://www.starming.com"]];
     //    [self.sCache preLoadByRequestWithUrls:@[@"http://www.github.com",@"http://www.baidu.com"]];
     
     //    [self.sCache stop];
@@ -46,6 +46,17 @@
     self.webView.delegate = self;
     NSURLRequest *re = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.google.com"]];
     [self.webView loadRequest:re];
+    
+//    NSURL *URL = [NSURL URLWithString:@"http://www.google.com"];
+//    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+//    
+//    [NSURLConnection sendAsynchronousRequest:request
+//                                       queue:[NSOperationQueue mainQueue]
+//                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+//                               // ...
+//                           }];
+    
+    
 }
 
 

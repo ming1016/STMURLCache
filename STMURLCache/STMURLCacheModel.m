@@ -10,8 +10,17 @@
 
 @implementation STMURLCacheModel
 
-#pragma mark - Interface
+#pragma mark - For NSURLProtocol
++ (STMURLCacheModel *)shareInstance {
+    static STMURLCacheModel *instance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[STMURLCacheModel alloc] init];
+    });
+    return instance;
+}
 
+#pragma mark - Interface
 - (NSCachedURLResponse *)localCacheResponeWithRequest:(NSURLRequest *)request {
     
     __block NSCachedURLResponse *cachedResponse = nil;

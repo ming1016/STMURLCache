@@ -12,7 +12,6 @@
 //-----------属性--------------
 @property (nonatomic, assign) NSUInteger memoryCapacity;
 @property (nonatomic, assign) NSUInteger diskCapacity;
-@property (nonatomic, copy) NSString *path;
 @property (nonatomic, assign) NSUInteger cacheTime;
 @property (nonatomic, copy) NSString *subDirectory;
 
@@ -40,4 +39,8 @@
 - (NSCachedURLResponse *)localCacheResponeWithRequest:(NSURLRequest *)request;
 //清除缓存
 - (void)checkCapacity;
+
+//for NSURLProtocol
++ (STMURLCacheModel *)shareInstance;
+
 @end
