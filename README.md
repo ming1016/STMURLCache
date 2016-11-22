@@ -14,14 +14,17 @@ self.sCache = [STMURLCache create:^(STMURLCacheMk *mk) {
 ```objective-c
 - (STMURLCacheMk *(^)(NSUInteger)) memoryCapacity;   //内存容量
 - (STMURLCacheMk *(^)(NSUInteger)) diskCapacity;     //本地存储容量
-- (STMURLCacheMk *(^)(NSString *)) path;             //路径
 - (STMURLCacheMk *(^)(NSUInteger)) cacheTime;        //缓存时间
 - (STMURLCacheMk *(^)(NSString *)) subDirectory;     //子目录
 - (STMURLCacheMk *(^)(BOOL)) isDownloadMode;         //是否启动下载模式
 - (STMURLCacheMk *(^)(NSArray *)) whiteListsHost;    //域名白名单
 - (STMURLCacheMk *(^)(NSString *)) whiteUserAgent;   //WebView的user-agent白名单
+
 - (STMURLCacheMk *(^)(NSString *)) addHostWhiteList;        //添加一个域名白名单
 - (STMURLCacheMk *(^)(NSString *)) addRequestUrlWhiteList;  //添加请求白名单
+
+//NSURLProtocol相关设置
+- (STMURLCacheMk *(^)(BOOL)) isUsingURLProtocol; //是否使用NSURLProtocol，默认使用NSURLCache
 ```
 
 也可以随时更新这些设置项
@@ -51,6 +54,8 @@ self.sCache = [STMURLCache create:^(STMURLCacheMk *mk) {
 ## 基本加载缓存实现原理
 创建 *STMURLCache* 后设置 *NSURLCache* 的 *URLCache* ，在 *cachedResponseForRequest* 方法中获取 *NSURLRequest* 判断白名单，检验是否有与之对应的 Cache ，有就使用本地数据返回 *NSCachedURLResponse* ，没有就通过网络获取数据数据缓存。 *STMURLCache* 对象释放时将 *NSURLCache* 设置为不缓存，表示这次预加载完成不需要再缓存。当缓存空间超出设置大小会将其清空。
 
+使用 *NSURLProtocol* 这种原理基本类似。
+
 ## 白名单实现原理
 创建域名列表设置项 *whiteListsHost* 和 *userAgent* 设置项，在创建和更新时对其进行设置。在网络请求开始通过设置项进行过滤。具体实现如下
 ```objective-c
@@ -73,6 +78,9 @@ if (self.mk.cModel.whiteUserAgent.length > 0) {
 ```
 
 ## 具体缓存实现
+缓存的实现有两种，一种是 *NSURLCache* 另一种是 *NSURLProtocol* ， *STMURLCache* 同时支持了这两种，通过 *STMURLCacheModel* 里的 *isUsingURLProtocol* 设置项来选择使用哪个。
+
+### NSURLCache的实现
 没有缓存的 request 会对其进行请求将获取数据按照hash地址存两份于本地，一份是数据，一份记录时间和类型，时间记录可以用于判断失效时间。对于判断是否有缓存可以根据请求地址对应的文件进行判断。具体实现如下：
 ```objective-c
 - (NSCachedURLResponse *)localCacheResponeWithRequest:(NSURLRequest *)request {
@@ -130,5 +138,47 @@ if (self.mk.cModel.whiteUserAgent.length > 0) {
     }
 }
 ```
+
+### NSURLProtocol的实现
+在设置配置项和更新配置项时需要创建一个 *STMURLCacheModel* 的单例来进行设置和更新配置项给 NSURLProtocol 的实现来使用。通过 isUsingURLProtocol 设置项区分， NSURLProtocol 是通过registerClass方式将protocol实现的进行注册。
+```objective-c
+- (STMURLCache *)configWithMk {
+    
+    self.mk.cModel.isSavedOnDisk = YES;
+    
+    if (self.mk.cModel.isUsingURLProtocol) {
+        STMURLCacheModel *sModel = [STMURLCacheModel shareInstance];
+        sModel.cacheTime = self.mk.cModel.cacheTime;
+        sModel.diskCapacity = self.mk.cModel.diskCapacity;
+        sModel.diskPath = self.mk.cModel.diskPath;
+        sModel.cacheFolder = self.mk.cModel.cacheFolder;
+        sModel.subDirectory = self.mk.cModel.subDirectory;
+        sModel.whiteUserAgent = self.mk.cModel.whiteUserAgent;
+        sModel.whiteListsHost = self.mk.cModel.whiteListsHost;
+        [NSURLProtocol registerClass:[STMURLProtocol class]];
+    } else {
+        [NSURLCache setSharedURLCache:self];
+    }
+    return self;
+}
+```
+
+关闭时两者也是不同的，通过设置项进行区分
+```objective-c
+- (void)stop {
+    if (self.mk.cModel.isUsingURLProtocol) {
+        [NSURLProtocol unregisterClass:[STMURLProtocol class]];
+    } else {
+        NSURLCache *c = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
+        [NSURLCache setSharedURLCache:c];
+    }
+    [self.mk.cModel checkCapacity];
+}
+```
+
+白名单处理还有读取缓存和前者都类似，但是在缓存Data时 *NSURLCached* 的方案里是通过发起一次新的请求来获取数据，而 *NSURLProtocol* 在 *NSURLConnection* 的 Delegate 里可以获取到，少了一次网络的请求，这里需要注意的是在 - (void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data 每次从这个回调里获取的数据不是完整的，要在 - (void) connectionDidFinishLoading:(NSURLConnection *)connection 这个会调里将分段数据拼接成完整的数据保存下来。具体完整的代码实现可以看 STMURLProtocol 里的代码实现。
+
+## 后记
+通过 *map* 网络请求可以缓存请求，也可以 *mock* 接口请求进行测试。
 
 完整代码：< [GitHub - ming1016/STMURLCache: iOS预加载Web页面方案](https://github.com/ming1016/STMURLCache) >
