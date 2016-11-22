@@ -64,8 +64,10 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
 }
 
 - (void)startLoading {
-    self.filePath = [self filePathFromRequest:self.request isInfo:NO];
-    self.otherInfoPath = [self filePathFromRequest:self.request isInfo:YES];
+    STMURLCacheModel *sModel = [STMURLCacheModel shareInstance];
+    
+    self.filePath = [sModel filePathFromRequest:self.request isInfo:NO];
+    self.otherInfoPath = [sModel filePathFromRequest:self.request isInfo:YES];
     NSDate *date = [NSDate date];
     
     NSFileManager *fm = [NSFileManager defaultManager];
@@ -74,8 +76,10 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
         //有缓存文件的情况
         NSDictionary *otherInfo = [NSDictionary dictionaryWithContentsOfFile:self.otherInfoPath];
         NSInteger createTime = [[otherInfo objectForKey:@"time"] integerValue];
-        if (createTime + 24 * 60 * 60 < [date timeIntervalSince1970]) {
-            expire = true;
+        if (sModel.cacheTime > 0) {
+            if (createTime + sModel.cacheTime < [date timeIntervalSince1970]) {
+                expire = true;
+            }
         }
         if (expire == false) {
             //从缓存里读取数据
@@ -135,6 +139,7 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
     [self clear];
 }
 
+#pragma mark - Helper
 - (void)clear {
     [self setData:nil];
     [self setConnection:nil];
@@ -150,60 +155,5 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
     }
 }
 
-#pragma mark - Cache Helper
-- (NSString *)filePathFromRequest:(NSURLRequest *)request isInfo:(BOOL)info {
-    NSString *url = request.URL.absoluteString;
-    NSString *fileName = [self cacheRequestFileName:url];
-    NSString *otherInfoFileName = [self cacheRequestOtherInfoFileName:url];
-    NSString *filePath = [self cacheFilePath:fileName];
-    NSString *fileInfoPath = [self cacheFilePath:otherInfoFileName];
-    if (info) {
-        return fileInfoPath;
-    }
-    return filePath;
-}
-
-- (NSString *)cacheRequestFileName:(NSString *)requestUrl {
-    return [self md5Hash:[NSString stringWithFormat:@"%@",requestUrl]];
-}
-- (NSString *)cacheRequestOtherInfoFileName:(NSString *)requestUrl {
-    return [self md5Hash:[NSString stringWithFormat:@"%@-otherInfo",requestUrl]];
-}
-- (NSString *)cacheFilePath:(NSString *)file {
-    NSString *path = @"URL/CacheDownload";
-    NSFileManager *fm = [NSFileManager defaultManager];
-    BOOL isDir;
-    if ([fm fileExistsAtPath:path isDirectory:&isDir] && isDir) {
-        //
-    } else {
-        [fm createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    NSString *diskPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
-    NSString *subDirPath = [NSString stringWithFormat:@"%@/URL/CacheDownload",diskPath];
-    if ([fm fileExistsAtPath:subDirPath isDirectory:&isDir] && isDir) {
-        //
-    } else {
-        [fm createDirectoryAtPath:subDirPath withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    NSString *cFilePath = [NSString stringWithFormat:@"%@/%@",subDirPath,file];
-    NSLog(@"%@",cFilePath);
-    return cFilePath;
-}
-
-
-#pragma mark - Function Helper
-- (NSString *)md5Hash:(NSString *)str {
-    const char *cStr = [str UTF8String];
-    unsigned char result[16];
-    CC_MD5( cStr, (CC_LONG)strlen(cStr), result );
-    NSString *md5Result = [NSString stringWithFormat:
-                           @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
-                           result[0], result[1], result[2], result[3],
-                           result[4], result[5], result[6], result[7],
-                           result[8], result[9], result[10], result[11],
-                           result[12], result[13], result[14], result[15]
-                           ];
-    return md5Result;
-}
 
 @end

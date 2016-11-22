@@ -99,10 +99,10 @@
 }
 
 - (NSString *)cacheRequestFileName:(NSString *)requestUrl {
-    return [self md5Hash:[NSString stringWithFormat:@"%@",requestUrl]];
+    return [STMURLCacheModel md5Hash:[NSString stringWithFormat:@"%@",requestUrl]];
 }
 - (NSString *)cacheRequestOtherInfoFileName:(NSString *)requestUrl {
-    return [self md5Hash:[NSString stringWithFormat:@"%@-otherInfo",requestUrl]];
+    return [STMURLCacheModel md5Hash:[NSString stringWithFormat:@"%@-otherInfo",requestUrl]];
 }
 - (NSString *)cacheFilePath:(NSString *)file {
     NSString *path = [NSString stringWithFormat:@"%@/%@",self.diskPath,self.cacheFolder];
@@ -142,11 +142,10 @@
         NSDictionary *fileDic = [[NSFileManager defaultManager] attributesOfItemAtPath:[[self cacheFolderPath] stringByAppendingPathComponent:fileName] error:nil];
         fileSize += [fileDic fileSize];
     }
-    
     return (NSUInteger)fileSize;
 }
 #pragma mark - Function Helper
-- (NSString *)md5Hash:(NSString *)str {
++ (NSString *)md5Hash:(NSString *)str {
     const char *cStr = [str UTF8String];
     unsigned char result[16];
     CC_MD5( cStr, (CC_LONG)strlen(cStr), result );

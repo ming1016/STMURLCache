@@ -43,4 +43,6 @@
 //for NSURLProtocol
 + (STMURLCacheModel *)shareInstance;
 
++ (NSString *)md5Hash:(NSString *)str;
+
 @end

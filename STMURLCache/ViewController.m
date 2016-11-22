@@ -25,7 +25,7 @@
     NSMutableArray *whiteLists = [NSMutableArray arrayWithArray:[whiteListStr componentsSeparatedByString:@"|"]];
     whiteLists = nil;
     self.sCache = [STMURLCache create:^(STMURLCacheMk *mk) {
-        mk.whiteListsHost(whiteLists).whiteUserAgent(@"starming").isUsingURLProtocol(YES);
+        mk.whiteListsHost(whiteLists).whiteUserAgent(@"starming").isUsingURLProtocol(YES).cacheTime(20*60*60);
     }];
     
     [self.sCache update:^(STMURLCacheMk *mk) {
