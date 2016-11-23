@@ -31,7 +31,7 @@
     [self.sCache update:^(STMURLCacheMk *mk) {
         mk.isDownloadMode(YES);
     }];
-    [self.sCache preLoadByWebViewWithUrls:@[@"http://www.v2ex.com",@"http://www.github.com",@"http://www.starming.com"]];
+//    [self.sCache preLoadByWebViewWithUrls:@[@"http://www.v2ex.com",@"http://www.github.com",@"http://www.starming.com"]];
     //    [self.sCache preLoadByRequestWithUrls:@[@"http://www.github.com",@"http://www.baidu.com"]];
     
     //    [self.sCache stop];
@@ -44,10 +44,10 @@
         make.top.left.right.bottom.equalTo(self.view);
     }];
     self.webView.delegate = self;
-    NSURLRequest *re = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.google.com"]];
+    NSURLRequest *re = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.starming.com"]];
     [self.webView loadRequest:re];
     
-//    NSURL *URL = [NSURL URLWithString:@"http://www.google.com"];
+//    NSURL *URL = [NSURL URLWithString:@"http://www.starming.com"];
 //    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
 //    
 //    [NSURLConnection sendAsynchronousRequest:request

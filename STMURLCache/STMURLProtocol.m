@@ -28,6 +28,7 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
     STMURLCacheModel *sModel = [STMURLCacheModel shareInstance];
+    
     //User-Agent来过滤
     if (sModel.whiteUserAgent.length > 0) {
         NSString *uAgent = [request.allHTTPHeaderFields objectForKey:@"User-Agent"];
@@ -46,6 +47,13 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
     //防止递归
     if ([NSURLProtocol propertyForKey:STMURLProtocolHandled inRequest:request]) {
         return NO;
+    }
+    //对于域名白名单的过滤
+    if (sModel.whiteListsHost.count > 0) {
+        id isExist = [sModel.whiteListsHost objectForKey:request.URL.host];
+        if (!isExist) {
+            return nil;
+        }
     }
     NSString *scheme = [[request.URL scheme] lowercaseString];
     if ([scheme isEqualToString:@"http"] || [scheme isEqualToString:@"https"]) {
@@ -69,7 +77,7 @@ static NSString *STMURLProtocolHandled = @"STMURLProtocolHandled";
     self.filePath = [sModel filePathFromRequest:self.request isInfo:NO];
     self.otherInfoPath = [sModel filePathFromRequest:self.request isInfo:YES];
     NSDate *date = [NSDate date];
-    
+
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL expire = false;
     if ([fm fileExistsAtPath:self.filePath]) {
