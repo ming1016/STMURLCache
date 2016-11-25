@@ -72,7 +72,26 @@
     return self;
 }
 //web view delegate
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+    if ([self.delegate respondsToSelector:@selector(preloadDidStartLoad)]) {
+        [self.delegate preloadDidStartLoad];
+    }
+}
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [self requestWebDone];
+    if ([self.delegate respondsToSelector:@selector(preloadDidFinishLoad:)]) {
+        [self.delegate preloadDidFinishLoad:self.preLoadWebUrls.count];
+    }
+}
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    [self requestWebDone];
+    if ([self.delegate respondsToSelector:@selector(preloadDidFailLoad)]) {
+        [self.delegate preloadDidFailLoad];
+    }
+}
+
+#pragma mark - WebView Delegate Private Method
+- (void)requestWebDone {
     if (self.preLoadWebUrls.count > 0) {
         [self.preLoadWebUrls removeObjectAtIndex:0];
         [self requestWebWithFirstPreUrl];
@@ -110,6 +129,13 @@
 #pragma mark - NSURLCache Method
 - (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request {
     STMURLCacheModel *cModel = self.mk.cModel;
+    //替换请求的处理
+    if (cModel.replaceUrl.length > 0 && cModel.replaceData) {
+        NSURLResponse *response = [[NSURLResponse alloc] initWithURL:request.URL MIMEType:@"text/html" expectedContentLength:cModel.replaceData.length textEncodingName:@"utf-8"];
+        NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:response data:cModel.replaceData];
+        return cachedResponse;
+    }
+    
     //对于模式的过滤
     if (!cModel.isDownloadMode) {
         return nil;

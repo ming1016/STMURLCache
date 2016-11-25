@@ -85,5 +85,18 @@
         return self;
     };
 }
+//替换请求
+- (STMURLCacheMk *(^)(NSString *)) replaceUrl {
+    return ^STMURLCacheMk *(NSString *v) {
+        self.cModel.replaceUrl = v;
+        return self;
+    };
+}
+- (STMURLCacheMk *(^)(NSData *)) replaceData {
+    return ^STMURLCacheMk *(NSData *v) {
+        self.cModel.replaceData = v;
+        return self;
+    };
+}
 
 @end

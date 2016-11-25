@@ -24,8 +24,10 @@
     
     NSMutableArray *whiteLists = [NSMutableArray arrayWithArray:[whiteListStr componentsSeparatedByString:@"|"]];
     whiteLists = nil;
+    NSString *hs = @"<a>打快点快点快点</a>";
+    NSData *da = [hs dataUsingEncoding:NSUTF8StringEncoding];
     self.sCache = [STMURLCache create:^(STMURLCacheMk *mk) {
-        mk.whiteListsHost(whiteLists).whiteUserAgent(@"starming").isUsingURLProtocol(YES).cacheTime(20*60*60);
+        mk.whiteListsHost(whiteLists).whiteUserAgent(@"starming").isUsingURLProtocol(NO).cacheTime(20*60*60).replaceUrl(@"http://www.starming.com").replaceData(da);
     }];
     
     [self.sCache update:^(STMURLCacheMk *mk) {

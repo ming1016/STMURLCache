@@ -21,6 +21,8 @@
 //NSURLProtocol相关设置
 - (STMURLCacheMk *(^)(BOOL)) isUsingURLProtocol; //是否使用NSURLProtocol，默认使用NSURLCache
 
-
+//替换请求
+- (STMURLCacheMk *(^)(NSString *)) replaceUrl;
+- (STMURLCacheMk *(^)(NSData *)) replaceData;
 
 @end

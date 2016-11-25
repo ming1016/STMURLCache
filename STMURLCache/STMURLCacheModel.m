@@ -223,5 +223,11 @@
     }
     return _whiteUserAgent;
 }
+- (NSString *)replaceUrl {
+    if (!_replaceUrl) {
+        _replaceUrl = @"";
+    }
+    return _replaceUrl;
+}
 
 @end

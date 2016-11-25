@@ -27,6 +27,9 @@
 @property (nonatomic, strong) NSMutableDictionary *whiteListsRequestUrl; //请求地址白名单
 @property (nonatomic, strong) NSString *whiteUserAgent;             //WebView的user-agent白名单
 
+@property (nonatomic, strong) NSString *replaceUrl;
+@property (nonatomic, strong) NSData *replaceData;
+
 //NSURLProtocol
 @property (nonatomic) BOOL isUsingURLProtocol; //是否使用URLProtocol
 
