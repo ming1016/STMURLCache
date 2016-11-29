@@ -29,7 +29,8 @@
 
 @optional
 - (void)preloadDidStartLoad;
-- (void)preloadDidFinishLoad:(NSUInteger)remain;
+- (void)preloadDidFinishLoad:(UIWebView *)webView remain:(NSUInteger)remain;
 - (void)preloadDidFailLoad;
+- (void)preloadDidAllDone;
 
 @end

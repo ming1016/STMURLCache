@@ -79,15 +79,26 @@
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     [self requestWebDone];
-    if ([self.delegate respondsToSelector:@selector(preloadDidFinishLoad:)]) {
-        [self.delegate preloadDidFinishLoad:self.preLoadWebUrls.count];
+    if ([self.delegate respondsToSelector:@selector(preloadDidFinishLoad:remain:)]) {
+        [self.delegate preloadDidFinishLoad:webView remain:self.preLoadWebUrls.count];
     }
 }
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    [self requestWebDone];
     if ([self.delegate respondsToSelector:@selector(preloadDidFailLoad)]) {
         [self.delegate preloadDidFailLoad];
     }
+    if(error.code == NSURLErrorCancelled)  {
+        if (self.preLoadWebUrls.count > 0) {
+            [self.preLoadWebUrls removeObjectAtIndex:0];
+            if (self.preLoadWebUrls.count == 0) {
+                [self preloadAllDone];
+            }
+        } else {
+            [self preloadAllDone];
+        }
+        return;
+    }
+    [self requestWebDone];
 }
 
 #pragma mark - WebView Delegate Private Method
@@ -96,16 +107,22 @@
         [self.preLoadWebUrls removeObjectAtIndex:0];
         [self requestWebWithFirstPreUrl];
         if (self.preLoadWebUrls.count == 0) {
-            self.wbView = nil;
-            [self stop];
+            [self preloadAllDone];
         }
     } else {
-        self.wbView = nil;
-        [self stop];
+        [self preloadAllDone];
     }
 }
+- (void)preloadAllDone {
+    self.wbView = nil;
+    [self stop];
+    if ([self.delegate respondsToSelector:@selector(preloadDidAllDone)]) {
+        [self.delegate preloadDidAllDone];
+    }
+}
+
 - (void)requestWebWithFirstPreUrl {
-    NSURLRequest *re = [NSURLRequest requestWithURL:[NSURL URLWithString:self.preLoadWebUrls.firstObject]];
+    NSURLRequest *re = [NSURLRequest requestWithURL:[NSURL URLWithString:self.preLoadWebUrls.firstObject] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
     [self.wbView loadRequest:re];
 }
 
