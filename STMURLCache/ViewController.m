@@ -47,7 +47,7 @@
         make.top.left.right.bottom.equalTo(self.view);
     }];
     self.webView.delegate = self;
-    NSURLRequest *re = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.starming.com"]];
+    NSURLRequest *re = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.baidu.com"]];
     [self.webView loadRequest:re];
     
 //    NSURL *URL = [NSURL URLWithString:@"http://www.starming.com"];
